@@ -10,13 +10,14 @@ class SpawnDevice
 
   spawn: (device, callback=->) =>
     debug 'spawning child process'
+    gateblu = device.gateblu ? {}
     environment =
-      DEBUG: device.gateblu?.DEBUG ? 'nothing'
+      DEBUG: gateblu.DEBUG ? 'nothing'
       MESHBLU_UUID: device.uuid
       MESHBLU_TOKEN: device.token
       MESHBLU_SERVER: @server
       MESHBLU_PORT: @port
-      CONNECTOR: device.gateblu?.CONNECTOR ? 'meshblu-shell'
+      CONNECTOR: gateblu.connector
 
     foreverOptions =
       uid: device.uuid

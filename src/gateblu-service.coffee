@@ -1,5 +1,6 @@
 _             = require 'lodash'
 async         = require 'async'
+MeshbluHttp   = require 'meshblu-http'
 DeviceList    = require 'meshblu-device-list'
 DeviceWatcher = require 'meshblu-device-watcher'
 DeviceManager = require './device-manager'
@@ -10,6 +11,7 @@ class GatebluService
     @deviceList = dependencies.deviceList ? new DeviceList {meshbluConfig}
     @deviceWatcher = dependencies.deviceWatcher ? new DeviceWatcher {meshbluConfig}
     @deviceManager = dependencies.deviceManager ? new DeviceManager {tmpPath,server:meshbluConfig.server,port:meshbluConfig.port}
+    @meshbluHttp = new MeshbluHttp meshbluConfig
 
   start: =>
     @deviceWatcher.onConfig @_onConfig
@@ -17,13 +19,18 @@ class GatebluService
 
   update: =>
     debug 'updating'
-    @deviceList.getList (error, devices) =>
-      debug 'got list of devices'
+    @meshbluHttp.whoami (error, device) =>
       return @_printError error if error?
-      devices = _.filter devices, (device) => device.gateblu?.running
-      async.eachSeries devices, @deviceManager.start, (error) =>
+      debug 'got whoami', device.gateblu?.running
+      return @deviceManager.shutdown() unless device.gateblu?.running
+      debug 'getting list'
+      @deviceList.getList (error, devices) =>
+        debug 'got list of devices'
         return @_printError error if error?
-        debug 'started devices'
+        devices = _.filter devices, (device) => device.gateblu?.running
+        async.eachSeries devices, @deviceManager.start, (error) =>
+          return @_printError error if error?
+          debug 'started devices'
 
   _printError: (error) =>
     console.error 'Error in Gateblu Service'

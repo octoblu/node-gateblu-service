@@ -10,7 +10,7 @@ class DeviceManager
     return callback null if @processManager.isRunning device
     @spawnDevice.spawn device, callback
 
-  shutdown: (callback) =>
+  shutdown: (callback=->) =>
     @processManager.killAll callback
 
 module.exports = DeviceManager
