@@ -1,17 +1,13 @@
-_     = require 'lodash'
-fs    = require 'fs-extra'
 npm   = require 'npm'
-path  = require 'path'
 debug = require('debug')('gateblu-service:connector-manager')
 
 class ConnectorManager
-  constructor: (@installPath, @connector, dependencies={}) ->
-    @connectorDir = path.join @installPath, 'node_modules', @connector
+  constructor: ({@tmpPath}) ->
 
-  installConnector: (callback=->) =>
+  installConnector: (connector, callback=->) =>
     npm.load production: true, =>
-      debug 'installConnector', @connector, @installPath
-      npm.commands.install @installPath, [@connector], (error) =>
+      debug 'installConnector', connector, @tmpPath
+      npm.commands.install @tmpPath, [connector, 'coffee-script'], (error) =>
         callback error
 
 module.exports = ConnectorManager
