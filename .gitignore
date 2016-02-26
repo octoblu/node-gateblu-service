@@ -31,3 +31,6 @@ node_modules
 
 # Optional REPL history
 .node_repl_history
+tmp/node_modules
+tmp/pids
+meshblu.json

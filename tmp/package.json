@@ -1,0 +1,16 @@
+{
+  "name": "gateblu-service-tmp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "wrapper.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "coffee-script": "^1.10.0",
+    "lodash": "^4.5.1",
+    "meshblu-shell": "^2.0.4"
+  }
+}

@@ -26,5 +26,15 @@
     "mocha-istanbul": "^0.2.0",
     "sinon": "^1.17.3",
     "sinon-chai": "^2.8.0"
+  },
+  "dependencies": {
+    "async": "^1.5.2",
+    "debug": "^2.2.0",
+    "forever-monitor": "^1.7.0",
+    "fs-extra": "^0.26.5",
+    "is-running": "^2.0.0",
+    "lodash": "^4.5.1",
+    "meshblu-device-list": "^1.0.1",
+    "meshblu-device-watcher": "^1.0.2"
   }
 }
