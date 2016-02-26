@@ -7,7 +7,6 @@ class ConnectorManager
   installConnector: (connector, callback=->) =>
     npm.load production: true, =>
       debug 'installConnector', connector, @tmpPath
-      npm.commands.install @tmpPath, [connector, 'coffee-script'], (error) =>
-        callback error
+      npm.commands.install @tmpPath, [connector, 'coffee-script'], callback
 
 module.exports = ConnectorManager
