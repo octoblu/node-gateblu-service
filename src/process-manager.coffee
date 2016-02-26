@@ -16,7 +16,7 @@ class ProcessManager
     fs.existsSync @getPath device
 
   get: (device) =>
-    fs.readFileSync @getPath device if @exists device
+    fs.readFileSync(@getPath device).toString() if @exists device
 
   write: (device, pid) =>
     debug 'writing process file', uuid: device.uuid, pid: pid

@@ -7,6 +7,7 @@ class DeviceManager
     @spawnDevice    = new SpawnDevice {tmpPath,server,port}
 
   start: (device, callback) =>
+    return callback null if @processManager.isRunning device
     @spawnDevice.spawn device, callback
 
   shutdown: (callback) =>
