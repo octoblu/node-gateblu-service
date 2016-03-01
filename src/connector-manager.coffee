@@ -3,7 +3,7 @@ debug = require('debug')('gateblu-service:connector-manager')
 debugStream = require('debug-stream')(debug)
 
 class ConnectorManager
-  constructor: ({@tmpPath}) ->
+  constructor: ({@buildPath}) ->
 
   installConnector: (connector, callback=->) =>
     config =
@@ -13,9 +13,9 @@ class ConnectorManager
 
     npm.load config, (error) =>
       return callback error if error?
-      debug 'installConnector', connector, @tmpPath
+      debug 'installConnector', connector, @buildPath
       packages = [connector, 'coffee-script', 'meshblu-config', 'meshblu-http']
-      npm.commands.install @tmpPath, packages, (error) => callback error
+      npm.commands.install @buildPath, packages, (error) => callback error
       npm.registry.log.on 'log', (message) =>
         return if message.prefix == 'attempt'
         debug message.level, message.messageRaw... if message.level == 'info'

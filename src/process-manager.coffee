@@ -7,12 +7,12 @@ debug   = require('debug')('gateblu-service:process-manager')
 PIDS_DIR='pids'
 
 class ProcessManager
-  constructor: ({@tmpPath}) ->
+  constructor: ({@buildPath}) ->
     fs.mkdirsSync @getPath()
 
   getPath: (device) =>
-    return path.join @tmpPath, PIDS_DIR, device.uuid if device?
-    path.join @tmpPath, PIDS_DIR
+    return path.join @buildPath, PIDS_DIR, device.uuid if device?
+    path.join @buildPath, PIDS_DIR
 
   exists: (device) =>
     fs.existsSync @getPath device

@@ -5,10 +5,11 @@ ConnectorManager = require './connector-manager'
 debug            = require('debug')('gateblu-service:device-manager')
 
 class DeviceManager
-  constructor: ({tmpPath,server,port}) ->
-    @processManager   = new ProcessManager {tmpPath}
-    @spawnDevice      = new SpawnDevice {tmpPath,server,port}
-    @connectorManager = new ConnectorManager {tmpPath}
+  constructor: ({buildPath,meshbluConfig}) ->
+    {server, port} = meshbluConfig
+    @processManager   = new ProcessManager {buildPath}
+    @spawnDevice      = new SpawnDevice {buildPath,server,port}
+    @connectorManager = new ConnectorManager {buildPath}
 
   start: (device, callback) =>
     debug 'device', device.uuid

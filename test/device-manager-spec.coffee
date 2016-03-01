@@ -5,13 +5,13 @@ ProcessManager = require '../src/process-manager'
 
 describe 'DeviceManager', ->
   before ->
-    @tmpPath = path.join __dirname, '..', 'tmp'
-    fs.removeSync(path.join(@tmpPath, 'node_modules'))
-    fs.removeSync(path.join(@tmpPath, 'pids'))
+    @buildPath = path.join __dirname, '..', 'tmp'
+    fs.removeSync(path.join(@buildPath, 'node_modules'))
+    fs.removeSync(path.join(@buildPath, 'pids'))
 
   beforeEach ->
-    @processManager = new ProcessManager {@tmpPath}
-    @sut = new DeviceManager {@tmpPath,server:'localhost',port:0xd00d}
+    @processManager = new ProcessManager {@buildPath}
+    @sut = new DeviceManager {@buildPath, meshbluConfig: {server:'localhost',port:0xd00d}}
 
   afterEach (done) ->
     @sut.shutdown done

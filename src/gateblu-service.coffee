@@ -7,10 +7,10 @@ DeviceManager = require './device-manager'
 debug         = require('debug')('gateblu-service:gateblu-service')
 
 class GatebluService
-  constructor: ({meshbluConfig}, dependencies={}) ->
+  constructor: ({meshbluConfig, buildPath}, dependencies={}) ->
     @deviceList = dependencies.deviceList ? new DeviceList {meshbluConfig}
     @deviceWatcher = dependencies.deviceWatcher ? new DeviceWatcher {meshbluConfig}
-    @deviceManager = dependencies.deviceManager ? new DeviceManager meshbluConfig
+    @deviceManager = dependencies.deviceManager ? new DeviceManager {meshbluConfig,buildPath}
     @meshbluHttp = new MeshbluHttp meshbluConfig
 
   start: =>

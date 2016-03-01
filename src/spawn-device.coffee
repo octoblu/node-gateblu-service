@@ -5,8 +5,8 @@ forever        = require 'forever-monitor'
 debug          = require('debug')('gateblu-service:spawn-device')
 
 class SpawnDevice
-  constructor: ({@tmpPath,@server,@port}) ->
-    @processManager = new ProcessManager {@tmpPath}
+  constructor: ({@buildPath,@server,@port}) ->
+    @processManager = new ProcessManager {@buildPath}
 
   spawn: (device, callback=->) =>
     deviceDebug = require('debug')("gateblu-service:device:#{device.uuid}")
@@ -26,7 +26,7 @@ class SpawnDevice
       silent: true
       args: []
       env: environment
-      cwd: @tmpPath
+      cwd: @buildPath
       command: 'node'
       checkFile: false
       killTree: true
