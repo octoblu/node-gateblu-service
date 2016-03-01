@@ -75,7 +75,7 @@ describe 'GatebluService', ->
           running: true
       expect(@deviceManager.start).to.have.been.calledWith spiderman
 
-    it 'should not start ironman', ->
+    it 'should start ironman', ->
       ironman =
         uuid: 'ironman'
         type: 'superhero'
@@ -83,7 +83,7 @@ describe 'GatebluService', ->
         token: 'some-token'
         gateblu:
           running: false
-      expect(@deviceManager.start).to.not.have.been.calledWith ironman
+      expect(@deviceManager.start).to.have.been.calledWith ironman
 
     describe 'when it gets a config event', ->
       describe 'when it is already running and is still running', ->
@@ -122,7 +122,7 @@ describe 'GatebluService', ->
               running: true
           expect(@deviceManager.start).to.have.been.calledWith spiderman
 
-        it 'should not start ironman', ->
+        it 'should start ironman', ->
           ironman =
             uuid: 'ironman'
             type: 'superhero'
@@ -130,7 +130,7 @@ describe 'GatebluService', ->
             token: 'some-token'
             gateblu:
               running: false
-          expect(@deviceManager.start).to.not.have.been.calledWith ironman
+          expect(@deviceManager.start).to.have.been.calledWith ironman
 
   describe 'when it has no devices and is started', ->
     beforeEach (done) ->

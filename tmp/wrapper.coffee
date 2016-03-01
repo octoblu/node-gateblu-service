@@ -11,11 +11,13 @@ class Wrapper
     return @runOld(connectorName)
 
   runOld: (connectorName) =>
-    require "#{connectorName}/command.js"
-    console.log 'Started old device'
-    process.on 'SIGTERM', =>
-      console.log 'Stopping old device'
-      process.exit 0
+    @getDevice (error, device) =>
+      return console.log 'Device not running' unless device.gateblu?.running
+      require "#{connectorName}/command.js"
+      console.log 'Started old device'
+      process.on 'SIGTERM', =>
+        console.log 'Stopping old device'
+        process.exit 0
 
   runNew: (connectorName)=>
     Connector = require connectorName
@@ -28,6 +30,7 @@ class Wrapper
       connector.update device
 
     @getDevice (error, device) =>
+      return console.log 'Device not running' unless device.gateblu?.running
       connector.start device, =>
         console.log 'Started new device'
 

@@ -1,12 +1,17 @@
+fs             = require 'fs-extra'
 path           = require 'path'
 DeviceManager  = require '../src/device-manager'
 ProcessManager = require '../src/process-manager'
 
 describe 'DeviceManager', ->
+  before ->
+    @tmpPath = path.join __dirname, '..', 'tmp'
+    fs.removeSync(path.join(@tmpPath, 'node_modules'))
+    fs.removeSync(path.join(@tmpPath, 'pids'))
+
   beforeEach ->
-    tmpPath = path.join __dirname, '..', 'tmp'
-    @processManager = new ProcessManager {tmpPath}
-    @sut = new DeviceManager {tmpPath,server:'localhost',port:0xd00d}
+    @processManager = new ProcessManager {@tmpPath}
+    @sut = new DeviceManager {@tmpPath,server:'localhost',port:0xd00d}
 
   afterEach (done) ->
     @sut.shutdown done
@@ -23,6 +28,8 @@ describe 'DeviceManager', ->
 
   describe 'when a device is started', ->
     beforeEach (done) ->
+      @timeout 50000
+
       spiderman =
         uuid: 'spiderman'
         type: 'superhero'
@@ -36,30 +43,31 @@ describe 'DeviceManager', ->
         @firstPid = @processManager.get spiderman
         done error
 
-    describe 'when auto shutdown', ->
-      it 'should write a pid file', ->
-        expect(@processManager.exists {uuid: 'spiderman'}).to.be.true
+    it 'should write a pid file', ->
+      expect(@processManager.exists {uuid: 'spiderman'}).to.be.true
 
-      it 'should the process should be running', ->
-        expect(@processManager.isRunning {uuid: 'spiderman'}).to.be.true
+    it 'should the process should be running', ->
+      expect(@processManager.isRunning {uuid: 'spiderman'}).to.be.true
 
-      describe 'when the device is started again', ->
-        beforeEach (done) ->
-          spiderman =
-            uuid: 'spiderman'
-            type: 'superhero'
-            connector: 'peter-parker'
-            token: 'some-token'
-            gateblu:
-              running: true
-              connector: 'gateblu-test-connector'
+    describe 'when the device is started again', ->
+      beforeEach (done) ->
+        spiderman =
+          uuid: 'spiderman'
+          type: 'superhero'
+          connector: 'peter-parker'
+          token: 'some-token'
+          gateblu:
+            running: false
+            connector: 'gateblu-test-connector'
 
-          @sut.start spiderman, (error) =>
-            @secondPid = @processManager.get spiderman
-            done error
+        @timeout 10000
 
-        it 'should not change the pid', ->
-          expect(@firstPid).to.equal @secondPid
+        @sut.start spiderman, (error) =>
+          @secondPid = @processManager.get spiderman
+          done error
+
+      it 'should not change the pid', ->
+        expect(@firstPid).to.equal @secondPid
 
   describe 'when a device is start but is missing the connector', ->
     beforeEach (done) ->

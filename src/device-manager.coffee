@@ -17,6 +17,7 @@ class DeviceManager
     debug 'starting connector', connector
     return callback null unless connector?
     @connectorManager.installConnector connector, (error) =>
+      debug 'installed connector', error: error
       return callback error if error?
       @spawnDevice.spawn device, callback
 

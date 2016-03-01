@@ -25,17 +25,15 @@ class GatebluService
       return @deviceManager.shutdown() unless device.gateblu?.running
       debug 'getting list'
       @deviceList.getList (error, devices) =>
-        debug 'got list of devices'
         return @_printError error if error?
-        debug 'got devices', devices
-        devices = _.filter devices, (device) => device.gateblu?.running
-        debug 'got running devices', _.map devices, 'uuid'
+        debug 'got devices', _.map devices, 'uuid'
         async.eachSeries devices, @deviceManager.start, (error) =>
           return @_printError error if error?
           debug 'started devices'
 
   shutdown: (callback) =>
     @deviceManager.shutdown callback
+
   _printError: (error) =>
     console.error 'Error in Gateblu Service'
     console.error error?.stack ? error?.message ? error if error?
