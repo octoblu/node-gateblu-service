@@ -9,6 +9,7 @@ class SpawnDevice
     @processManager = new ProcessManager {@tmpPath}
 
   spawn: (device, callback=->) =>
+    deviceDebug = require('debug')("gateblu-service:device:#{device.uuid}")
     debug 'spawning child process'
     gateblu = device.gateblu ? {}
     environment =
@@ -32,24 +33,24 @@ class SpawnDevice
 
     child = new (forever.Monitor)('wrapper.js', foreverOptions)
     child.on 'stderr', (data) =>
-      debug 'stderr', device.uuid, data.toString()
+      deviceDebug 'stderr', data.toString()
 
     child.on 'stdout', (data) =>
-      debug 'stdout', device.uuid, data.toString()
+      deviceDebug 'stdout', data.toString()
 
     child.on 'stop', =>
-      debug "process for #{device.uuid} stopped."
+      deviceDebug 'process stopped.'
       @processManager.clear device
 
     child.on 'exit', =>
-      debug "process for #{device.uuid} stopped."
+      deviceDebug 'process stopped.'
       @processManager.clear device
 
     child.on 'error', (error) =>
-      debug 'error', error
+      deviceDebug 'error', error
 
     child.on 'exit:code', (code) =>
-      debug 'exit:code', code
+      deviceDebug 'exit:code', code
 
     debug 'forever', {uuid: device.uuid, name: device.name}, 'starting'
     child.start()
