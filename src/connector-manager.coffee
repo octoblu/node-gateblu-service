@@ -7,6 +7,6 @@ class ConnectorManager
   installConnector: (connector, callback=->) =>
     npm.load production: true, =>
       debug 'installConnector', connector, @tmpPath
-      npm.commands.install @tmpPath, [connector, 'coffee-script'], callback
+      npm.commands.install @tmpPath, [connector, 'coffee-script', 'meshblu-config', 'meshblu-http', 'meshblu-device-watcher'], callback
 
 module.exports = ConnectorManager

@@ -1,13 +1,47 @@
+MeshbluConfig = require 'meshblu-config'
+MeshbluHttp   = require 'meshblu-http'
+DeviceWatcher = require 'meshblu-device-watcher'
+
 class Wrapper
   run: =>
     connectorName = process.env.CONNECTOR
     return @panic 'Missing Connector Name' unless connectorName?
-    Connector = require connectorName
-    @connector = new Connector()
-    @connector.start()
+    packageJSON = require "#{connectorName}/package.json"
+    return @runNew(connectorName) if packageJSON.isSimpleConnector
+    return @runOld(connectorName)
+
+  runOld: (connectorName) =>
+    require "#{connectorName}/command.js"
+    console.log 'Started old device'
     process.on 'SIGTERM', =>
-      console.log 'Stopping device'
-      @connector.stop()
+      console.log 'Stopping old device'
+      process.exit 0
+
+  runNew: (connectorName)=>
+    Connector = require connectorName
+
+    connector = new Connector()
+
+    deviceWatcher = new DeviceWatcher @getMeshbluConfig()
+    deviceWatcher.onConfig (error, device) =>
+      return console.log error if error?
+      connector.update device
+
+    @getDevice (error, device) =>
+      connector.start device, =>
+        console.log 'Started new device'
+
+    process.on 'SIGTERM', =>
+      console.log 'Stopping new device'
+      connector.stop =>
+        process.exit 0
+
+  getMeshbluConfig: =>
+    return new MeshbluConfig({}).toJSON()
+
+  getDevice: (callback) =>
+    meshbluHttp = new MeshbluHttp @getMeshbluConfig()
+    meshbluHttp.whoami callback
 
   panic: (error) =>
     console.log error if error?
