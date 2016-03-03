@@ -39,5 +39,6 @@ node_modules
 .installer/darwin/dmg/*.pkg
 .installer/darwin/*.dmg
 meshblu.json
-build
+./build
+!build/package.json
 tmp

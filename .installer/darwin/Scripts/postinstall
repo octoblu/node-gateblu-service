@@ -1,19 +1,25 @@
 #!/bin/sh
 set -e
 export GATEBLU_HOME="$HOME/Library/Application Support/GatebluService"
+export GATEBLU_SERVICE_HOME="/Library/Octoblu/GatebluService"
 export MESHBLU_JSON_FILE=$GATEBLU_HOME/meshblu.json
+export PACKAGE_JSON_FILE=$GATEBLU_HOME/package.json
 
 /usr/bin/sudo mkdir -p /var/log/gateblu
 /usr/bin/sudo chmod 777 /var/log/gateblu
 
+pushd "$GATEBLU_HOME"
 if [ ! -f "$MESHBLU_JSON_FILE" ]; then
-  pushd "$GATEBLU_HOME"
   echo "Downloading, registering and claiming..."
   curl -sO https://s3-us-west-2.amazonaws.com/gateblu/go-meshblu-device-claimer/latest/meshblu-device-claimer-darwin-amd64
   chmod +x ./meshblu-device-claimer-darwin-amd64
   ./meshblu-device-claimer-darwin-amd64 -p "$MESHBLU_JSON_FILE"
-  popd
 fi
+if [ ! -f "$PACKAGE_JSON_FILE" ]; then
+  echo "Creating build package.json"
+  cp "$GATEBLU_SERVICE_HOME/package-build.json" "$PACKAGE_JSON_FILE"
+fi
+popd
 
 ln -sf "/Library/Octoblu/GatebluService/com.octoblu.GatebluService.plist" /Library/LaunchAgents
 /usr/bin/sudo -u $USER /bin/launchctl load "/Library/LaunchAgents/com.octoblu.GatebluService.plist"

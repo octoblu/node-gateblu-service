@@ -1,28 +1,30 @@
+path          = require 'path'
 MeshbluConfig = require 'meshblu-config'
 MeshbluHttp   = require 'meshblu-http'
 DeviceWatcher = require 'meshblu-device-watcher'
 
+connectorName = process.env.CONNECTOR
+connectorPath = process.env.CONNECTOR_PATH ? __dirname
+
 class Wrapper
   run: =>
-    connectorName = process.env.CONNECTOR
-    connectorPath = process.env.CONNECTOR_PATH ? __dirname
-    connectorFullPath = path.join(connectorPath, connectorName)
+    @connectorFullPath = path.join(connectorPath, 'node_modules', connectorName)
     return @panic 'Missing Connector Name' unless connectorName?
-    packageJSON = require "#{connectorName}/package.json"
+    packageJSON = require "#{@connectorFullPath}/package.json"
     return @runNew(connectorName) if packageJSON.isSimpleConnector
     return @runOld(connectorName)
 
   runOld: (connectorName) =>
     @getDevice (error, device) =>
       return console.log 'Device not running' unless device.gateblu?.running
-      require "#{connectorFullPath}/command.js"
+      require "#{@connectorFullPath}/command.js"
       console.log 'Started old device'
       process.on 'SIGTERM', =>
         console.log 'Stopping old device'
         process.exit 0
 
   runNew: (connectorName)=>
-    Connector = require connectorFullPath
+    Connector = require @connectorFullPath
 
     connector = new Connector()
 

@@ -29,11 +29,13 @@ fi
 
 echo "### cleaning up cache"
 rm -rf $CACHE_DIR/dmg
+rm $CACHE_DIR/*.dmg
+rm $CACHE_DIR/Gateblu*.pkg
 mkdir -p $CACHE_DIR/dmg
 sudo rm -rf $OUTPUT_DIR
 
 echo "### copying app"
-rsync -avq --exclude='node_modules' --exclude='meshblu.json' --exclude='test' --exclude='.git' --exclude='.installer' $ROOT_DIR/ $OUTPUT_DIR
+rsync -avq --exclude='node_modules' --exclude='meshblu.json' --exclude='test' --exclude='build' --exclude='.git' --exclude='.installer' $ROOT_DIR/ $OUTPUT_DIR
 cp $INSTALLER_DIR/com.octoblu.GatebluService.plist $INSTALLER_DIR/start-gateblu-service $OUTPUT_DIR
 
 echo "### building app"

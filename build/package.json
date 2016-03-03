@@ -1,0 +1,21 @@
+{
+  "name": "build",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "meshblu-wemo": "^1.5.5",
+    "meshblu-config": "^4.0.0",
+    "meshblu-http": "^5.1.0",
+    "meshblu-myo": "^3.1.4"
+  },
+  "devDependencies": {
+    "coffee-script": "^1.10.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
