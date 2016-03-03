@@ -1,6 +1,6 @@
 {
   "name": "node-gateblu-service",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "Node Gateblu Service",
   "main": "index.js",
   "scripts": {

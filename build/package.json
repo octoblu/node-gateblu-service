@@ -4,7 +4,6 @@
   "description": "",
   "main": "wrapper.js",
   "dependencies": {
-    "gateblu-test-connector": "^1.0.1",
     "meshblu-device-watcher": "^2.0.0",
     "meshblu-config": "^3.2.0",
     "meshblu-http": "^5.1.0"
