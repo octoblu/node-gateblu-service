@@ -1,10 +1,60 @@
-language: node_js
-node_js:
-- '5'
+sudo: false
+language: shell
 addons:
   code_climate:
-    repo_token: "f75e4d62c253eacd31ba69e0e2fd657a823c256209b43a9eb053446f98c9ffec"
+    repo_token: f75e4d62c253eacd31ba69e0e2fd657a823c256209b43a9eb053446f98c9ffec
+os:
+- linux
+- osx
 before_script:
-- npm install -g codeclimate-test-reporter
+- if [ "$TRAVIS_OS_NAME" == "linux" ]; then npm install -g codeclimate-test-reporter; fi
 after_script:
-- codeclimate-test-reporter < coverage/lcov.info
+- if [ "$TRAVIS_OS_NAME" == "linux" ]; codeclimate-test-reporter < coverage/lcov.info; fi
+before_install:
+- if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install nvm; fi
+- if [ "$TRAVIS_OS_NAME" == "osx" ]; then source $(brew --prefix nvm)/nvm.sh; fi
+- nvm install 5
+- npm install -g npm@latest-3
+install:
+- npm install
+script:
+- if [ "$TRAVIS_OS_NAME" != "osx" ]; then npm test; fi
+after_success:
+- mkdir -p dpl_s3
+- if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+    .installer/darwin/build;
+  fi
+- if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+    mkdir -p dpl_s3/latest;
+    cp .installer/darwin/cache/GatebluService* dpl_s3/latest;
+  fi
+- if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+    mkdir -p "dpl_s3/${TRAVIS_TAG}";
+    cp .installer/darwin/cache/GatebluService* "dpl_s3/${TRAVIS_TAG}";
+  fi
+deploy:
+- provider: s3
+  access_key_id: AKIAJH2D5IPIRHYJT5IA
+  secret_access_key:
+    secure: pRFFQg/GeZBzxF4RRo7n4McHAVaplxIsBztn5mUePoOaW8hdjBJW2UtrmIGbMbltaUOTeKioYP1GzujVIMvSVdOYdw32sBtXAGm9z+gvG4oXsGIw8cv/xmiXTmsSSBg3+QBy37rxnMv540ff69hkDEAWeBnX9Gl1ZCDIvBHF/FDBGw/0hGy0w94NLL7mwTUUhVNRudvjVAfDixgK0XdLvYhYk0Yrn3hDxaNuV9uuyMgMuK8d+fhEtU1pmc4JqMgrRIqZOMoRXoTCl+YLH/zMce1LKLclyhDj0t/6aIXI77+dXAf2ahgyne0A+6QQLBtc9q8+2qYO2Udpz+4OI3VpzukpVbdrkF8Dbxb8bvu9KW+9myuXtrUVeT2D9PO/OgtLObmwYvpZPoZYWK0muM9IpOQCwdwOYcrYkqLnmC9SDTzPKOvAJpkRQRq6VKlO52CGRZf7Zhw7r85vEn4JH+xvB0GuVJKgFb3/7MBnEljYhRtpDtjzwHSe3ns4gh5z+IRdJ8GZYBTIfm4dJ6+KhcJSnv+LM+1HiIoSx/uafIxB4q3+KBNj4PpPJ+TTN3rtKDEfRm2k4gHN7MRk1gp9BrjojQQhhWIkVs2MCeK594/woscEQ4eQ7M4yqsuHGa01bJE4WaotR0K+7M3B+8i7BSSBS6xKg6TLrUENXZavShp5KD0=
+  bucket: gateblu
+  upload-dir: node-gateblu-service
+  region: us-west-2
+  skip_cleanup: true
+  local-dir: dpl_s3
+  on:
+    tags: true
+    all_branches: master
+- provider: npm
+  skip_cleanup: true
+  clean_up: false
+  email: serveradmin@octoblu.com
+  api_key:
+    secure: p+DZTRzZuxU8yuehHDgg5Kbf6/qIrAyCVe8X3uamngR8UQI60xztCLSMeaqVkdZT0qAGb4S/E5l/Lt0YKx401DZyCNGN8UUfdfTYuu4PUHlT97UHEw4tnHdo8Sg++57E4ExLXHrhkwKUD4dlBzQyLtxysRBzf52WkzV2QcnILkYU5Vn5ClSWGIOZ58polnJe+u662lulIrunolcSYZNNjLFKhFX6l6VZmaar5x3SdPNvj5eQhFjRMVm/C2tD2WqmHqac/NUHvwid8iEsJC1dTIP5npbsLijTzFLJQBQeKJHU5cEmEk65meYsFxyvnOSgALYCcL/VE2xqarIFIqd+1T1wukYlWZLKmdYjWCDZcjz/LFoeAJmacuXDElqWwiBwnJbafaN/zQ5pWKJBSyqP7M7+bTD2q0DwpDpfWdwEEy1QUaV5Jhg0Pu7azDOrsae5VAFTgn2THgXObiUOMZ2aMOoZAjOCLHlL7OQLRtbcBzsq7W/gOaGm6G/N3y0M5TepvdRF62prASdquf6K7G/VFObxfhUURRx7YIlrUHD0ou2Cy/bLYGuRhSX3VFyyPtrk1c3hsOjm3ewEsc5byl94nbRxLAINe+v7Kz1IyRKorlw9IWiVW/a57tz6Bj1FZjkXCfTIMPND35m5t0/8+MkNflhakBJ6IABAhHYol51s0UI=
+  on:
+    tags: true
+    branches: true
+env:
+  global:
+  - secure: N6cxPy+LiLrHpSnbZnSlR5EIlDEDI0++aVZln9YBOi55SNFf9pP8Aqa4PkkKgWSbO8RRgQRBndzuDZ+uU8zxuhv2T55OUh0M9/oR9LhQAv4xGNryBvo3pjhCO3G213M8lBsEoD8bfHeBTgyBdld3Y2N/XzSeSzPPlbR3YMbltX0=
+  - secure: f3hz1LMumb8/n3zoHJIVij/+XyY1mfvjchri03L6fhQkn9m/H7/wJFF7mPnY8EEZzSICx+tmheSShoEZfzgwVJmyfGRl7MTjcACbYwAP5ZPuZOGZDvmkfn1fsOALpeHX4exBJMwlWPT58FTJa4zN11IKQy91xs5phRDoWINkUu3S83AjDaQ4+SFyvaBoiUWe0DJgCoaPojsTreA24wJ3azcXlcrv47fn2j/c+cQwozjJEjUQBT/vdvw5R0A62gAGAvQ2TOzpGMENxFx9AidETxrdp3Wq2HcIN6N6BWZTUc12C6uQy7mZ1sLaFW7HvcuyBei3L7vT0k4b+MC/m2PdUb0cNRn5qgtuvlxRF3XJMg7Y1Nt0ADwGBH50tUjsvl9SVWb/qfEglpAcPtqIJT2oxc9jyDDk45ZEbwNjIS9MkDxA3xHCmsPfbiL80pjDTO6pfzTnJ4RmlHJ/uzJlYBsHqHJhJ2L6Fb2785h3O68WvZBqTUlXCvR+5Uz7QInS0dOurRgXgpiDvSjQa1pNY7JHTuCB9FzFmYKT9O2SRJ2T4C90Ts/yw316ybqkR/R+006BGV/iQ7bUHTJeqgdZytBtzMxwqNw5FTfA89OqZ1WRXGj04jjaBL4SZlZRZrCwR0hebcvJDuopaX5uX8n/XIarTjjLbgPAI/9ooo12/xtsg+w=

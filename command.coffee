@@ -7,7 +7,7 @@ debug          = require('debug')('gateblu-service:command')
 class Command
   run: =>
     debug 'running'
-    buildPath = process.env.MESHBLU_BUILD_PATH ? path.join __dirname, 'build'
+    buildPath = process.env.GATEBLU_BUILD_PATH ? path.join __dirname, 'build'
     meshbluJSONFile = path.join(buildPath, 'meshblu.json')
     meshbluConfig = new MeshbluConfig({filename: meshbluJSONFile}).toJSON()
     return @die new Error("Missing Meshblu Config. Should be here, #{meshbluJSONFile}") unless meshbluConfig.uuid

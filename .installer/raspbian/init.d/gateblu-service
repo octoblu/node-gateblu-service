@@ -1,0 +1,41 @@
+#!/bin/bash
+# /etc/init.d/gateblu-service
+
+### BEGIN INIT INFO
+# Provides:          gateblu-service
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Gateblu Service for Raspberry Pi
+# Description:       Connect devices to Octoblu
+### END INIT INFO
+
+export GATEBLU_DIR=/home/pi/gateblu-service
+export MESHBLU_JSON_FILE=$GATEBLU_DIR/meshblu.json
+export DEBUG=meshblu*,gateblu*
+
+case "$1" in
+    start)
+        echo "Starting gateblu-service"
+        /bin/su pi -c "mkdir -p $GATEBLU_DIR"
+        if [ /boot/meshblu.json -nt $MESHBLU_JSON_FILE ]; then
+          echo "Copying meshblu.json from /boot"
+          if [ -f $MESHBLU_JSON_FILE ]; then
+            /bin/su pi -c "cp -rfp $MESHBLU_JSON_FILE $MESHBLU_JSON_FILE.$(date +%F_%R)"
+          fi
+          /bin/su pi -c "cp -rfp /boot/meshblu.json $MESHBLU_JSON_FILE"
+        fi
+        cd $GATEBLU_DIR; /bin/su pi -c "gateblu-service > $GATEBLU_DIR/gateblu.log 2>&1" &
+        ;;
+    stop)
+        echo "Stopping gateblu-service"
+        /bin/su pi -c "ps ax | grep gateblu-service | awk '{ print $1 }' | xargs kill"
+        ;;
+    *)
+        echo "Usage: /etc/init.d/gateblu-service start|stop"
+        exit 1
+        ;;
+esac
+
+exit 0
