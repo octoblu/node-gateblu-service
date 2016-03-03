@@ -1,5 +1,8 @@
 #!/bin/sh
 set -e
+echo "# removing old GatebluService directory"
+/usr/bin/sudo rm -rf /Library/Octoblu/GatebluService/*
 if /bin/launchctl list "com.octoblu.GatebluService" &> /dev/null; then
-    /usr/bin/sudo -u $USER /bin/launchctl unload "/Library/LaunchAgents/com.octoblu.GatebluService.plist"
+  echo "# stopping service"
+  /usr/bin/sudo -u $USER /bin/launchctl unload "/Library/LaunchAgents/com.octoblu.GatebluService.plist"
 fi

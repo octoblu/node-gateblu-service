@@ -44,7 +44,7 @@ sudo chown -R root:wheel $OUTPUT_DIR
 identity="A5D9EE988CEFE25C6D04679D00F9C8C60B63C240"
 identity_name="Developer ID Installer: Octoblu Inc. (JLSZ8Q5945)"
 
-pkgbuild --root . \
+pkgbuild --root $OUTPUT_DIR \
   --identifier com.octoblu.GatebluService \
   --version 1.0 \
   --component-plist $INSTALLER_DIR/GatebluServiceCore.plist \
@@ -75,7 +75,6 @@ codesign --force --verify --verbose --keychain ~/Library/Keychains/mac-build.key
 
 echo "### moving service package"
 cp $CACHE_DIR/GatebluService.pkg $CACHE_DIR/dmg
-echo "pkg copied"
 
 echo "### verifying signature"
 codesign -vvv -d "$CACHE_DIR/GatebluServiceCore.pkg"

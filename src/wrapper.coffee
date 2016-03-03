@@ -5,6 +5,8 @@ DeviceWatcher = require 'meshblu-device-watcher'
 class Wrapper
   run: =>
     connectorName = process.env.CONNECTOR
+    connectorPath = process.env.CONNECTOR_PATH ? __dirname
+    connectorFullPath = path.join(connectorPath, connectorName)
     return @panic 'Missing Connector Name' unless connectorName?
     packageJSON = require "#{connectorName}/package.json"
     return @runNew(connectorName) if packageJSON.isSimpleConnector
@@ -13,14 +15,14 @@ class Wrapper
   runOld: (connectorName) =>
     @getDevice (error, device) =>
       return console.log 'Device not running' unless device.gateblu?.running
-      require "#{connectorName}/command.js"
+      require "#{connectorFullPath}/command.js"
       console.log 'Started old device'
       process.on 'SIGTERM', =>
         console.log 'Stopping old device'
         process.exit 0
 
   runNew: (connectorName)=>
-    Connector = require connectorName
+    Connector = require connectorFullPath
 
     connector = new Connector()
 

@@ -19,6 +19,7 @@ class SpawnDevice
       MESHBLU_SERVER: @server
       MESHBLU_PORT: @port
       CONNECTOR: gateblu.connector
+      CONNECTOR_PATH: @buildPath
 
     debug 'device env', environment
     foreverOptions =
@@ -27,7 +28,7 @@ class SpawnDevice
       silent: true
       args: []
       env: environment
-      cwd: @buildPath
+      cwd: __dirname
       command: 'node'
       checkFile: false
       killTree: true
