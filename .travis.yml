@@ -41,6 +41,7 @@ deploy:
   api_key:
     secure: p+DZTRzZuxU8yuehHDgg5Kbf6/qIrAyCVe8X3uamngR8UQI60xztCLSMeaqVkdZT0qAGb4S/E5l/Lt0YKx401DZyCNGN8UUfdfTYuu4PUHlT97UHEw4tnHdo8Sg++57E4ExLXHrhkwKUD4dlBzQyLtxysRBzf52WkzV2QcnILkYU5Vn5ClSWGIOZ58polnJe+u662lulIrunolcSYZNNjLFKhFX6l6VZmaar5x3SdPNvj5eQhFjRMVm/C2tD2WqmHqac/NUHvwid8iEsJC1dTIP5npbsLijTzFLJQBQeKJHU5cEmEk65meYsFxyvnOSgALYCcL/VE2xqarIFIqd+1T1wukYlWZLKmdYjWCDZcjz/LFoeAJmacuXDElqWwiBwnJbafaN/zQ5pWKJBSyqP7M7+bTD2q0DwpDpfWdwEEy1QUaV5Jhg0Pu7azDOrsae5VAFTgn2THgXObiUOMZ2aMOoZAjOCLHlL7OQLRtbcBzsq7W/gOaGm6G/N3y0M5TepvdRF62prASdquf6K7G/VFObxfhUURRx7YIlrUHD0ou2Cy/bLYGuRhSX3VFyyPtrk1c3hsOjm3ewEsc5byl94nbRxLAINe+v7Kz1IyRKorlw9IWiVW/a57tz6Bj1FZjkXCfTIMPND35m5t0/8+MkNflhakBJ6IABAhHYol51s0UI=
   on:
+    condition: "$TRAVIS_OS_NAME = linux"
     tags: true
     branches: true
 env:
