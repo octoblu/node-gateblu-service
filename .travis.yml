@@ -13,8 +13,8 @@ after_script:
 before_install:
 - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install nvm; fi
 - if [ "$TRAVIS_OS_NAME" == "osx" ]; then source $(brew --prefix nvm)/nvm.sh; fi
-- nvm install 5
-- npm install -g npm
+- nvm install 0.10
+- npm install -g npm@latest-2
 install:
 - npm install
 script:
