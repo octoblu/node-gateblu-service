@@ -28,7 +28,6 @@ class SpawnDevice
       silent: true
       args: []
       env: environment
-      cwd: __dirname
       command: 'node'
       checkFile: false
       killTree: true

@@ -21,8 +21,8 @@ class GatebluService
     debug 'updating'
     @meshbluHttp.whoami (error, device) =>
       return @_printError error if error?
-      debug 'got whoami', device.gateblu?.running
-      return @deviceManager.shutdown() unless device.gateblu?.running
+      debug 'got whoami', device?.gateblu?.running
+      return @deviceManager.shutdown() unless device?.gateblu?.running
       debug 'getting list'
       @deviceList.getList (error, devices) =>
         return @_printError error if error?

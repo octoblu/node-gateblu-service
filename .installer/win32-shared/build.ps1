@@ -73,7 +73,7 @@ If (!(Test-Path $cache_dir\npm)){
 
 echo "Copying to $tmp_dir..."
 #Copy excluding .git and installer
-robocopy $script_dir\..\.. $tmp_dir /S /NFL /NDL /NS /NC /NJH /NJS /XD .git installer .installer coverage test node_modules
+robocopy $script_dir\..\.. $tmp_dir /S /NFL /NDL /NS /NC /NJH /NJS /XD .git installer .installer coverage test build node_modules
 robocopy $cache_dir\node_modules $tmp_dir\node_modules /S /NFL /NDL /NS /NC /NJH /NJS
 robocopy $shared_dir\assets $tmp_dir /S /NFL /NDL /NS /NC /NJH /NJS
 
@@ -88,7 +88,11 @@ pushd $tmp_dir
 7z -y x $tmp_dir\GatebluServiceTray.zip | Out-Null
 popd
 Remove-Item $tmp_dir\GatebluServiceTray.zip -Force -Recurse
-
+echo "Adding go-meshblu-device-claimer..."
+$source = "https://s3-us-west-2.amazonaws.com/gateblu/go-meshblu-device-claimer/latest/meshblu-device-claimer-darwin-amd64"
+$destination = "$tmp_dir\GatebluServiceTray.zip"
+echo "Downloading $tmp_dir\GatebluServiceTray.zip..."
+Invoke-WebRequest $source -OutFile $destination
 echo "Installing node_modules..."
 pushd $tmp_dir
 . "$cache_dir\npm.cmd" install npm -g
